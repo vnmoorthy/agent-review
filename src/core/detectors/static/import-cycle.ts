@@ -32,7 +32,6 @@ export const detector: Detector = {
 
     // Find cycles that include our file.
     const start = ctx.filePath;
-    const ourImports = graph.get(start) ?? new Set();
     const ourAdded = collectImports(ctx.filePath, ctx.newContent).filter((e) =>
       addedLineNumbers(ctx).includes(e.line)
     );

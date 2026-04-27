@@ -51,32 +51,34 @@ A starter config is checked in as [`agent-review.config.example.json`](../agent-
 
 A custom detector is a small JavaScript module that follows the same shape as the built-in detectors. IDs MUST start with `CUSTOM` so they don't collide with the built-in `AR0XX` taxonomy.
 
+> **Trust note:** custom detector files are loaded via `require()` and run with full Node privileges. Only enable them in repos you control. Pass `--no-plugins` (or set `AGENT_REVIEW_NO_PLUGINS=1`) to skip plugin loading entirely. The Claude Code skill ships with this set by default. See [SECURITY.md](../SECURITY.md).
+
 ```js
-// detectors/no-cron.js
+// detectors/no-set-timeout.js
 exports.detector = {
-  id: "CUSTOM_NO_CRON",
+  id: "CUSTOM_NO_SETTIMEOUT",
   category: "drive-by",
-  title: "Cron module imported",
-  applies: (ctx) => ctx.filePath.endsWith(".ts"),
+  title: "setTimeout outside tests",
+  applies: (ctx) =>
+    ctx.filePath.endsWith(".ts") && !ctx.filePath.includes("/test/"),
   run: (ctx) => {
     if (!ctx.newContent) return [];
-    const out = [];
-    ctx.newContent.split("\n").forEach((line, i) => {
-      if (/from\s+['"]cron['"]/.test(line)) {
-        out.push({
-          detectorId: "CUSTOM_NO_CRON",
+    return ctx.newContent.split("\n").reduce((acc, line, i) => {
+      if (/\bsetTimeout\s*\(/.test(line)) {
+        acc.push({
+          detectorId: "CUSTOM_NO_SETTIMEOUT",
           category: "drive-by",
-          title: "Cron module imported",
+          title: "setTimeout outside tests",
           file: ctx.filePath,
           line: i + 1,
           endLine: i + 1,
           severity: "medium",
           confidence: "high",
-          message: "Use the platform scheduler instead of `cron`.",
+          message: "Use the platform scheduler, not setTimeout, in production code.",
         });
       }
-    });
-    return out;
+      return acc;
+    }, []);
   },
 };
 ```
@@ -84,7 +86,7 @@ exports.detector = {
 Reference it in your config:
 
 ```json
-{ "customDetectors": ["./detectors/no-cron.js"] }
+{ "customDetectors": ["./detectors/no-set-timeout.js"] }
 ```
 
 ## Inline ignore directives

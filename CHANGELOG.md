@@ -2,6 +2,26 @@
 
 All notable changes to agent-review are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/), and the project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.1.6] — 2026-04-27
+
+### Security
+
+- **Tightened the `customDetectors` trust boundary.** `customDetectors` config entries are loaded via `require()` and run with full Node privileges. The Claude Code skill auto-runs agent-review at task wrap-up, which made repo-driven `customDetectors` a one-step RCE vector for malicious repos.
+  - New `--no-plugins` CLI flag and `AGENT_REVIEW_NO_PLUGINS=1` environment variable disable plugin loading.
+  - The bundled Claude Code skill template (`src/skill/SKILL.md`) now sets `AGENT_REVIEW_NO_PLUGINS=1` on every example command, so auto-runs are safe by default.
+  - When custom detectors ARE loaded, agent-review writes a one-line warning to stderr naming the count and pointing at the disable mechanisms.
+  - Added [SECURITY.md](./SECURITY.md) documenting the trust model.
+- **SHA-pinned `peter-evans/create-or-update-comment`** in `action.yml` (was `@v4`, now pinned to `71345be0…` with `# v4` comment for readability). Added `.github/dependabot.yml` to keep the SHA pin updated automatically.
+
+### Fixed
+
+- `--files <path>` git error is now translated to `agent-review: one or more --files paths could not be found in the diff: <names>` instead of leaking the raw git command line.
+- Running outside a git repo gives a one-line `must be run inside a git repository` instead of a raw `git rev-parse… failed` line.
+- The static-only banner (`Set ANTHROPIC_API_KEY…`) only prints on terminal output AND when there are findings — clean runs no longer get nagged on every invocation.
+- `agent-review explain <id>` relabels its examples from ambiguous `Example (before)` / `Example (after)` to `Clean code:` / `What the agent commits:`. The semantics were always "before/after the agent introduced the bug," but readers expected "before/after the fix."
+- `docs/config.md` and the README now reference the same custom-detector example (`no-set-timeout.js`) instead of two different ones.
+- Cleared four `@typescript-eslint/no-unused-vars` warnings in `src/core/detectors/static/`.
+
 ## [0.1.5] — 2026-04-27
 
 ### Fixed

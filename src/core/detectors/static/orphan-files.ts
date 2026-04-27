@@ -1,6 +1,6 @@
 // AR016 — new file added in this diff that no other file in the repo imports.
 
-import type { Detector, Finding } from "../types.js";
+import type { Detector } from "../types.js";
 import { isLanguageFile } from "../../git/files.js";
 import { makeFinding } from "../helpers.js";
 import { readFileSync, statSync } from "node:fs";

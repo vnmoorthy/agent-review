@@ -92,6 +92,8 @@ function applyCliOverrides(cfg: RunConfig, opts: any): RunConfig {
   if (opts.deny) cfg.detectorDenylist = opts.deny.split(",").map((s: string) => s.trim());
   if (opts.failOn) cfg.failOn = opts.failOn;
   if (opts.noColor) cfg.noColor = true;
+  // commander's `--no-plugins` exposes `opts.plugins === false` when set.
+  if (opts.plugins === false) cfg.noPlugins = true;
   if (opts.llm === false) cfg.llm.provider = "none";
   if (opts.llm === true) {
     if (cfg.llm.provider === "none") {
@@ -150,6 +152,15 @@ async function reviewCommand(opts: any): Promise<void> {
   try {
     diff = collectDiff({ cwd, mode: cfg.diffMode, baseRef: cfg.baseRef, files: cfg.files });
   } catch (err: any) {
+    // Translate the rawer git errors that surface to users into actionable
+    // messages. The two we hit most are missing files and running outside a repo.
+    const msg = (err as Error)?.message ?? String(err);
+    if (cfg.files && cfg.files.length > 0 && /Invalid path|outside repository|did not match any file/.test(msg)) {
+      fatal(new Error(`one or more --files paths could not be found in the diff: ${cfg.files.join(", ")}`));
+    }
+    if (/not a git repository/.test(msg)) {
+      fatal(new Error("agent-review must be run inside a git repository (cwd = " + cwd + ")"));
+    }
     fatal(err);
   }
 
@@ -182,10 +193,23 @@ async function reviewCommand(opts: any): Promise<void> {
     );
   }
 
-  // Load custom detectors from config.
-  const customDetectors: Detector[] = projectConfig?.customDetectors
-    ? await loadCustomDetectors(diff.repoRoot, projectConfig.customDetectors)
-    : [];
+  // Load custom detectors from config. Plugins run with full Node privileges,
+  // so we skip them when noPlugins is on (via --no-plugins or
+  // AGENT_REVIEW_NO_PLUGINS=1) and warn loudly when they're loaded so the user
+  // is never surprised by which third-party code is about to execute.
+  let customDetectors: Detector[] = [];
+  if (projectConfig?.customDetectors && projectConfig.customDetectors.length > 0) {
+    if (cfg.noPlugins) {
+      process.stderr.write(
+        `agent-review: plugins disabled (--no-plugins or AGENT_REVIEW_NO_PLUGINS=1). Skipping ${projectConfig.customDetectors.length} customDetectors from config.\n`
+      );
+    } else {
+      process.stderr.write(
+        `agent-review: loading ${projectConfig.customDetectors.length} customDetectors from config (run with --no-plugins or AGENT_REVIEW_NO_PLUGINS=1 to disable). Custom detectors run with full Node privileges; only enable for trusted repos.\n`
+      );
+      customDetectors = await loadCustomDetectors(diff.repoRoot, projectConfig.customDetectors);
+    }
+  }
 
   if (diff.files.length === 0) {
     if (cfg.output === "json") {
@@ -266,9 +290,18 @@ async function reviewCommand(opts: any): Promise<void> {
   }
   process.stdout.write(out + "\n");
 
-  if (cfg.output !== "json" && cfg.llm.provider === "none" && opts.llm === undefined) {
+  // Static-only banner: only show on terminal output AND when there are
+  // findings (so clean repos don't get nagged on every run). Suppressed when
+  // the user already passed --llm (we'd've warned about missing provider
+  // earlier) and when output is machine-readable.
+  if (
+    cfg.output === "terminal" &&
+    cfg.llm.provider === "none" &&
+    opts.llm === undefined &&
+    findings.length > 0
+  ) {
     process.stderr.write(
-      "agent-review: static analysis only. Set ANTHROPIC_API_KEY (or OLLAMA_BASE_URL) and pass --llm to enable LLM checks.\n"
+      "agent-review: static analysis only. Set ANTHROPIC_API_KEY (or OLLAMA_BASE_URL) and pass --llm to enable 10 more detectors (AR026-AR035) for subtle logic errors.\n"
     );
   }
 
@@ -352,6 +385,10 @@ program
     ])
   )
   .option("--no-cache", "Skip the persistent finding cache")
+  .option(
+    "--no-plugins",
+    "Skip loading customDetectors from config (also: AGENT_REVIEW_NO_PLUGINS=1). Custom detectors run with full Node privileges; disable for untrusted repos."
+  )
   .option("--timeout <seconds>", "LLM timeout in seconds")
   .addOption(
     new Option("--fail-on <level>", "Exit non-zero on findings")
@@ -476,10 +513,10 @@ program
       "Why agents do this:",
       `  ${entry.whyAgentsDoThis}`,
       "",
-      "Example (before):",
+      "Clean code:",
       ...entry.example.before.split("\n").map((l) => "  " + l),
       "",
-      "Example (after):",
+      "What the agent commits:",
       ...entry.example.after.split("\n").map((l) => "  " + l),
       "",
       `Reference: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#${entry.id.toLowerCase()}`,

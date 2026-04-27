@@ -263,6 +263,8 @@ Wire it up in `.agent-review.json`:
 
 Custom detector IDs must start with `CUSTOM` so they don't collide with the built-in `AR0XX` taxonomy.
 
+> Custom detectors run with full Node privileges. Only enable them in repos you control, or pass `--no-plugins` (or set `AGENT_REVIEW_NO_PLUGINS=1`) to disable plugin loading. The bundled Claude Code skill auto-runs with `AGENT_REVIEW_NO_PLUGINS=1` set. See [SECURITY.md](./SECURITY.md).
+
 ## How it works
 
 ```mermaid

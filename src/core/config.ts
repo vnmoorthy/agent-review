@@ -29,6 +29,11 @@ export interface RunConfig {
   failOn: "never" | "any" | "high" | "critical";
   baseline: boolean;
   noColor: boolean;
+  // When true, skip loading custom detectors specified in `.agent-review.json`'s
+  // `customDetectors` field. Custom detectors run with full Node privileges, so
+  // disabling them is safer in untrusted contexts (Claude Code skill auto-runs,
+  // CI on PRs from forks, etc.).
+  noPlugins: boolean;
 }
 
 export function defaultConfig(cwd: string): RunConfig {
@@ -50,7 +55,13 @@ export function defaultConfig(cwd: string): RunConfig {
     failOn: "never",
     baseline: false,
     noColor: !process.stdout.isTTY,
+    noPlugins: isTruthyEnv(process.env.AGENT_REVIEW_NO_PLUGINS),
   };
+}
+
+function isTruthyEnv(v: string | undefined): boolean {
+  if (!v) return false;
+  return v === "1" || v.toLowerCase() === "true" || v.toLowerCase() === "yes";
 }
 
 export function detectLlmProvider(): LlmProvider {

@@ -7,7 +7,7 @@
 //   - reformatting (added/removed blank lines, semicolons)
 // AND: no functional tokens (return, throw, new, await, =, !==, etc.) added.
 
-import type { Detector, Finding } from "../types.js";
+import type { Detector } from "../types.js";
 import { isLanguageFile } from "../../git/files.js";
 import { makeFinding } from "../helpers.js";
 
@@ -36,7 +36,6 @@ export const detector: Detector = {
     if (!fd.hunks.length) return [];
 
     let added = 0;
-    let removed = 0;
     let functionalAdded = 0;
 
     for (const hunk of fd.hunks) {
@@ -45,8 +44,6 @@ export const detector: Detector = {
           added++;
           const body = line.slice(1).trim();
           if (body && FUNCTIONAL_TOKENS.some((re) => re.test(body))) functionalAdded++;
-        } else if (line.startsWith("-")) {
-          removed++;
         }
       }
     }
