@@ -12,7 +12,7 @@ labels: bug
 ## Repro
 
 ```
-$ npx agent-review --version
+$ npx @vnmoorthy/agent-review --version
 $ # commands you ran
 ```
 

@@ -1,7 +1,7 @@
 // agent-review CLI entry point. Wires diff acquisition, detector runner,
 // output, and side-effecting commands (skill install, --apply-safe).
 
-import { Command } from "commander";
+import { Command, Option } from "commander";
 import { existsSync, mkdirSync, cpSync, rmSync, writeFileSync, chmodSync } from "node:fs";
 import { homedir } from "node:os";
 import { join, resolve } from "node:path";
@@ -174,6 +174,14 @@ async function reviewCommand(opts: any): Promise<void> {
   if (projectConfig?.llm?.enabled === false && opts.llm === undefined)
     cfg.llm.provider = "none";
 
+  // If the user explicitly asked for --llm but no provider is configured,
+  // warn loudly so they don't silently get a static-only run.
+  if (opts.llm === true && cfg.llm.provider === "none") {
+    process.stderr.write(
+      "agent-review: --llm requested but no provider configured. Set ANTHROPIC_API_KEY (or pass --provider with --ollama-url/--openai-url) and re-run. Skipping LLM detectors.\n"
+    );
+  }
+
   // Load custom detectors from config.
   const customDetectors: Detector[] = projectConfig?.customDetectors
     ? await loadCustomDetectors(diff.repoRoot, projectConfig.customDetectors)
@@ -310,6 +318,7 @@ program
 program
   .command("review", { isDefault: true })
   .description("Review the current git diff and report agent-introduced issues.")
+  .allowExcessArguments(false)
   .option("--staged", "Review staged changes (default)")
   .option("--last-commit", "Review HEAD~1..HEAD")
   .option("--branch [base]", "Review base..HEAD (default base = main)")
@@ -322,7 +331,11 @@ program
   .option("--github", "Emit GitHub Actions annotations (auto-enabled in CI)")
   .option("--junit", "Emit JUnit XML (for Jenkins, Buildkite, GitLab, CircleCI)")
   .option("--html", "Emit a standalone HTML report")
-  .option("--severity <level>", "Minimum severity to report", "info")
+  .addOption(
+    new Option("--severity <level>", "Minimum severity to report")
+      .choices(["info", "low", "medium", "high", "critical"])
+      .default("info")
+  )
   .option("--allow <ids>", "Comma-separated detector IDs to allowlist")
   .option("--deny <ids>", "Comma-separated detector IDs to skip")
   .option("--llm", "Enable LLM-augmented detectors (AR026-AR035)")
@@ -330,10 +343,21 @@ program
   .option("--model <name>", "LLM model name")
   .option("--ollama-url <url>", "Ollama base URL")
   .option("--openai-url <url>", "OpenAI-compatible base URL (e.g. Groq, Together)")
-  .option("--provider <name>", "LLM provider: anthropic | openai | ollama | none")
+  .addOption(
+    new Option("--provider <name>", "LLM provider").choices([
+      "anthropic",
+      "openai",
+      "ollama",
+      "none",
+    ])
+  )
   .option("--no-cache", "Skip the persistent finding cache")
   .option("--timeout <seconds>", "LLM timeout in seconds")
-  .option("--fail-on <level>", "Exit non-zero on findings: never|any|high|critical", "never")
+  .addOption(
+    new Option("--fail-on <level>", "Exit non-zero on findings")
+      .choices(["never", "any", "high", "critical"])
+      .default("never")
+  )
   .option("--baseline", "Use the baseline file to suppress pre-existing findings")
   .option("--baseline-update", "Refresh the baseline file with current findings")
   .option("--baseline-file <path>", "Override the baseline file location")
@@ -402,7 +426,7 @@ if ! command -v npx >/dev/null 2>&1; then
   echo "agent-review hook: npx not found; skipping" >&2
   exit 0
 fi
-npx --yes agent-review --staged --fail-on high
+npx --yes @vnmoorthy/agent-review --staged --fail-on high
 `;
     writeFileSync(path, script);
     chmodSync(path, 0o755);
@@ -504,7 +528,7 @@ program
 # Installed by \`agent-review init\`.
 set -e
 if ! command -v npx >/dev/null 2>&1; then exit 0; fi
-npx --yes agent-review --staged --fail-on high
+npx --yes @vnmoorthy/agent-review --staged --fail-on high
 `;
       writeFileSync(hookPath, script);
       chmodSync(hookPath, 0o755);

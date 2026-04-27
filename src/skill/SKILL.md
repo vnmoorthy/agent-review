@@ -22,22 +22,22 @@ Run `agent-review --json` against the appropriate diff scope.
 
 ```
 # Default: review staged changes
-npx agent-review --json
+npx @vnmoorthy/agent-review --json
 
 # Review last commit (e.g., after you committed at the user's request)
-npx agent-review --last-commit --json
+npx @vnmoorthy/agent-review --last-commit --json
 
 # Review the working tree (uncommitted edits)
-npx agent-review --working-tree --json
+npx @vnmoorthy/agent-review --working-tree --json
 
 # Restrict to files you touched
-npx agent-review --working-tree --files src/foo.ts src/bar.ts --json
+npx @vnmoorthy/agent-review --working-tree --files src/foo.ts src/bar.ts --json
 ```
 
 If the user has `ANTHROPIC_API_KEY` set and is OK with sending code to a model, add `--llm` to enable the 10 LLM-augmented detectors (subtle logic, spec drift, missing edge case, etc.):
 
 ```
-npx agent-review --working-tree --llm --json
+npx @vnmoorthy/agent-review --working-tree --llm --json
 ```
 
 ## How to act on the output
@@ -74,7 +74,7 @@ Group findings by severity in your reply:
 For each high-confidence `auto-safe` finding (look up in `agent-review list` if unsure — auto-safe currently includes `AR001`, `AR002`, `AR003`, `AR007`, `AR012`), ask the user if they want to apply the fix automatically, then run:
 
 ```
-npx agent-review --working-tree --apply-safe
+npx @vnmoorthy/agent-review --working-tree --apply-safe
 ```
 
 For `suggestion-only` findings, present the suggestion and let the user decide.

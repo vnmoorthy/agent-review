@@ -131,7 +131,7 @@ function buildFallbackAst(source: string, lang: Lang): AstNode {
     : lang === "py"
       ? /^\s*(import|from)\s+/
       : lang === "go"
-        ? /^\s*import\s*[\("]/
+        ? /^\s*import\s*[("]/
         : lang === "rust"
           ? /^\s*use\s+/
           : /^a^/;

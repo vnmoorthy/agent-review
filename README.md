@@ -2,9 +2,9 @@
 
 > Catch the 35 specific bugs AI coding agents commit when they write or modify code. Offline by default. Free. MIT.
 
-[![npm](https://img.shields.io/npm/v/agent-review.svg)](https://www.npmjs.com/package/agent-review)
+[![npm](https://img.shields.io/npm/v/@vnmoorthy/agent-review.svg)](https://www.npmjs.com/package/@vnmoorthy/agent-review)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Node](https://img.shields.io/node/v/agent-review.svg)](https://nodejs.org)
+[![Node](https://img.shields.io/node/v/@vnmoorthy/agent-review.svg)](https://nodejs.org)
 [![Tests](https://img.shields.io/badge/tests-64%20passing-brightgreen)](./test)
 [![Detectors](https://img.shields.io/badge/detectors-35-purple)](./TAXONOMY.md)
 
@@ -65,10 +65,10 @@ agent-review is the only tool that ships a curated taxonomy of *agent-specific* 
 npx @vnmoorthy/agent-review
 
 # Install globally
-npm i -g agent-review
+npm i -g @vnmoorthy/agent-review
 
 # Or as a dev dependency
-npm i -D agent-review
+npm i -D @vnmoorthy/agent-review
 ```
 
 Node 18+ required.

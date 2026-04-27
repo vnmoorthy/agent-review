@@ -34,7 +34,7 @@ A starter config is checked in as [`agent-review.config.example.json`](../agent-
   // LLM provider settings.
   "llm": {
     "enabled": false,
-    "provider": "anthropic",                  // "anthropic" | "ollama" | "none"
+    "provider": "anthropic",                  // "anthropic" | "openai" | "ollama" | "none"
     "model": "claude-haiku-4-5-20251001",
     "timeoutMs": 60000
   },

@@ -110,7 +110,7 @@ export function resolveRule(
 
 // Glob match (very basic, supports **, *, and ?).
 export function globMatch(pattern: string, path: string): boolean {
-  let p = pattern;
+  const p = pattern;
   // Anchor logic: if the pattern doesn't start with '/' or '**', allow match anywhere.
   const re = p
     .replace(/[.+^${}()|[\]\\]/g, "\\$&")

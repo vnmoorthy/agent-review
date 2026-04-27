@@ -39,7 +39,7 @@ export function collectProjectInfo(repoRoot: string): ProjectInfo {
       ecosystems.push("python");
       try {
         const content = readFileSync(p, "utf8");
-        for (const m of content.matchAll(/^([a-zA-Z0-9_\-]+)(?:[<>=!~]|$)/gm)) {
+        for (const m of content.matchAll(/^([a-zA-Z0-9_-]+)(?:[<>=!~]|$)/gm)) {
           if (m[1]) declaredDependencies.add(m[1].toLowerCase());
         }
       } catch {
@@ -55,13 +55,13 @@ export function collectProjectInfo(repoRoot: string): ProjectInfo {
     ecosystems.push("go");
     try {
       const content = readFileSync(join(repoRoot, "go.mod"), "utf8");
-      for (const m of content.matchAll(/^\s*require\s+([\w.\-/]+)\s+v[\w.\-]+/gm)) {
+      for (const m of content.matchAll(/^\s*require\s+([\w./-]+)\s+v[\w.-]+/gm)) {
         if (m[1]) declaredDependencies.add(m[1]);
       }
       // Inside a `require ( ... )` block, lines have the form `pkg ver`.
       const blockMatch = content.match(/require\s*\(([\s\S]*?)\)/);
       if (blockMatch?.[1]) {
-        for (const m of blockMatch[1].matchAll(/^\s*([\w.\-/]+)\s+v[\w.\-]+/gm)) {
+        for (const m of blockMatch[1].matchAll(/^\s*([\w./-]+)\s+v[\w.-]+/gm)) {
           if (m[1]) declaredDependencies.add(m[1]);
         }
       }
@@ -75,7 +75,7 @@ export function collectProjectInfo(repoRoot: string): ProjectInfo {
     ecosystems.push("rust");
     try {
       const content = readFileSync(join(repoRoot, "Cargo.toml"), "utf8");
-      for (const m of content.matchAll(/^([a-zA-Z0-9_\-]+)\s*=/gm)) {
+      for (const m of content.matchAll(/^([a-zA-Z0-9_-]+)\s*=/gm)) {
         if (m[1]) declaredDependencies.add(m[1]);
       }
     } catch {

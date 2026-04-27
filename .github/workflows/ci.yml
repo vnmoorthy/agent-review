@@ -30,6 +30,12 @@ jobs:
           fi
       - run: |
           if [ -f pnpm-lock.yaml ]; then
+            pnpm lint
+          else
+            npm run lint
+          fi
+      - run: |
+          if [ -f pnpm-lock.yaml ]; then
             pnpm test
           else
             npm test
