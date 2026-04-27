@@ -1,6 +1,6 @@
 {
   "name": "agent-review",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Catch the 35 specific bugs AI coding agents commit when they write or modify code.",
   "keywords": [
     "claude",
