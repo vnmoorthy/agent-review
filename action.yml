@@ -64,6 +64,20 @@ runs:
           echo "base=main" >> "$GITHUB_OUTPUT"
         fi
 
+    - name: Install agent-review
+      shell: bash
+      # Install into a sibling directory rather than the user's repo so we
+      # don't pollute their tree, and so we can call the bin via `node` with
+      # an absolute path (npx's scoped-bin resolution is unreliable on Linux
+      # runners regardless of --package syntax).
+      run: |
+        AR_HOME="$RUNNER_TEMP/agent-review"
+        mkdir -p "$AR_HOME"
+        cd "$AR_HOME"
+        echo '{}' > package.json
+        npm install --no-save --no-audit --no-fund --silent @vnmoorthy/agent-review
+        echo "AR_BIN=$AR_HOME/node_modules/@vnmoorthy/agent-review/bin/agent-review.js" >> "$GITHUB_ENV"
+
     - name: Run agent-review
       id: review
       shell: bash
@@ -71,9 +85,9 @@ runs:
         ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
       run: |
         # Generate SARIF for Code Scanning, JSON for parsing, markdown for PR comment.
-        npx --yes --package=@vnmoorthy/agent-review -- agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --sarif > agent-review.sarif || true
-        npx --yes --package=@vnmoorthy/agent-review -- agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --json > agent-review.json || true
-        npx --yes --package=@vnmoorthy/agent-review -- agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --markdown > agent-review.md || true
+        node "$AR_BIN" --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --sarif > agent-review.sarif || true
+        node "$AR_BIN" --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --json > agent-review.json || true
+        node "$AR_BIN" --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --markdown > agent-review.md || true
 
         TOTAL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('agent-review.json', 'utf8')).summary.total)")
         echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
@@ -82,7 +96,7 @@ runs:
         # Emit GitHub annotations for inline diff comments.
         LLM_FLAG=""
         if [ "${{ inputs.llm }}" = "true" ]; then LLM_FLAG="--llm"; fi
-        npx --yes --package=@vnmoorthy/agent-review -- agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --github $LLM_FLAG --fail-on "${{ inputs.fail-on }}"
+        node "$AR_BIN" --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --github $LLM_FLAG --fail-on "${{ inputs.fail-on }}"
 
     - name: Upload SARIF
       if: ${{ inputs.upload-sarif == 'true' && always() }}
