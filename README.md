@@ -277,7 +277,7 @@ graph LR
   G --> H[Apply baseline filter]
   H --> I{--apply-safe?}
   I -- yes --> J[Apply auto-safe fixes bottom-up]
-  I -- no --> K[Format output: terminal | json | markdown | sarif | github]
+  I -- no --> K["Format output: terminal, json, markdown, sarif, github"]
   J --> K
 ```
 
