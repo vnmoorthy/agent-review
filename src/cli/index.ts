@@ -48,8 +48,16 @@ const VERSION = (() => {
     for (const p of candidates) {
       if (fs.existsSync(p)) {
         const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
-        if (pkg && typeof pkg.version === "string" && pkg.name === "agent-review")
+        // Accept any package name ending in "agent-review" so this works under
+        // both the unscoped name and any user-scoped name (e.g. @vnmoorthy/agent-review).
+        if (
+          pkg &&
+          typeof pkg.version === "string" &&
+          typeof pkg.name === "string" &&
+          /(^|\/)agent-review$/.test(pkg.name)
+        ) {
           return pkg.version as string;
+        }
       }
     }
   } catch {
