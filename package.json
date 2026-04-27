@@ -1,6 +1,6 @@
 {
   "name": "agent-review",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Catch the 35 specific bugs AI coding agents commit when they write or modify code.",
   "keywords": [
     "claude",
@@ -67,12 +67,24 @@
     "tree-sitter-typescript": ">=0.23.0"
   },
   "peerDependenciesMeta": {
-    "tree-sitter": { "optional": true },
-    "tree-sitter-go": { "optional": true },
-    "tree-sitter-javascript": { "optional": true },
-    "tree-sitter-python": { "optional": true },
-    "tree-sitter-rust": { "optional": true },
-    "tree-sitter-typescript": { "optional": true }
+    "tree-sitter": {
+      "optional": true
+    },
+    "tree-sitter-go": {
+      "optional": true
+    },
+    "tree-sitter-javascript": {
+      "optional": true
+    },
+    "tree-sitter-python": {
+      "optional": true
+    },
+    "tree-sitter-rust": {
+      "optional": true
+    },
+    "tree-sitter-typescript": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
