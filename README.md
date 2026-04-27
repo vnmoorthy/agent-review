@@ -124,7 +124,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - uses: agent-review/agent-review@v0
+      - uses: vnmoorthy/agent-review@v0
         with:
           fail-on: high
           # llm: "true"
@@ -304,7 +304,7 @@ Caching: re-runs against the same content hash skip the analysis entirely. Store
 
 ## Contributing
 
-If you've spotted a pattern AI agents repeatedly produce that isn't in the taxonomy, [open an issue](https://github.com/agent-review/agent-review/issues/new?template=new-detector.md) using the new-detector template. Pull requests adding new detectors get reviewed in days, not weeks.
+If you've spotted a pattern AI agents repeatedly produce that isn't in the taxonomy, [open an issue](https://github.com/vnmoorthy/agent-review/issues/new?template=new-detector.md) using the new-detector template. Pull requests adding new detectors get reviewed in days, not weeks.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup.
 

@@ -25,8 +25,8 @@ Don't ship this without reading. The taxonomy is the marketing artifact. The too
 >
 > MIT, runs offline by default, contributions to the taxonomy welcome.
 >
-> Repo: https://github.com/agent-review/agent-review
-> Taxonomy: https://github.com/agent-review/agent-review/blob/main/TAXONOMY.md
+> Repo: https://github.com/vnmoorthy/agent-review
+> Taxonomy: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md
 
 ## r/ClaudeAI
 

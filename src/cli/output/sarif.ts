@@ -36,10 +36,10 @@ export function formatSarif(findings: Finding[], opts: { toolVersion: string }):
     name: t.title.replace(/\s+/g, ""),
     shortDescription: { text: t.title },
     fullDescription: { text: t.description },
-    helpUri: `https://github.com/agent-review/agent-review/blob/main/TAXONOMY.md#${t.id.toLowerCase()}`,
+    helpUri: `https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#${t.id.toLowerCase()}`,
     help: {
       text: `${t.title}\n\n${t.description}\n\nWhy agents do this: ${t.whyAgentsDoThis}`,
-      markdown: `## ${t.id}: ${t.title}\n\n${t.description}\n\n**Why agents do this:** ${t.whyAgentsDoThis}\n\n[Read the full taxonomy entry](https://github.com/agent-review/agent-review/blob/main/TAXONOMY.md#${t.id.toLowerCase()})`,
+      markdown: `## ${t.id}: ${t.title}\n\n${t.description}\n\n**Why agents do this:** ${t.whyAgentsDoThis}\n\n[Read the full taxonomy entry](https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#${t.id.toLowerCase()})`,
     },
     properties: {
       category: t.category,
@@ -114,7 +114,7 @@ export function formatSarif(findings: Finding[], opts: { toolVersion: string }):
           driver: {
             name: "agent-review",
             version: opts.toolVersion,
-            informationUri: "https://github.com/agent-review/agent-review",
+            informationUri: "https://github.com/vnmoorthy/agent-review",
             rules,
           },
         },

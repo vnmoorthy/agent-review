@@ -425,7 +425,7 @@ program
       "Example (after):",
       ...entry.example.after.split("\n").map((l) => "  " + l),
       "",
-      `Reference: https://github.com/agent-review/agent-review/blob/main/TAXONOMY.md#${entry.id.toLowerCase()}`,
+      `Reference: https://github.com/vnmoorthy/agent-review/blob/main/TAXONOMY.md#${entry.id.toLowerCase()}`,
     ];
     process.stdout.write(lines.join("\n") + "\n");
   });
@@ -450,7 +450,7 @@ program
         const example = JSON.stringify(
           {
             $schema:
-              "https://raw.githubusercontent.com/agent-review/agent-review/main/docs/config.schema.json",
+              "https://raw.githubusercontent.com/vnmoorthy/agent-review/main/docs/config.schema.json",
             exclude: ["dist/**", "build/**", "vendor/**"],
             severity: "info",
             failOn: "high",

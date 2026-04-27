@@ -2,14 +2,14 @@
 
 AI coding agents — Claude Code, Codex, Cursor, Aider, OpenHands, and the rest — write code competently most of the time. But they fail in a *different* shape than humans do. Human reviewers, trained on a decade of code review for human-authored code, miss most of the new failure profile.
 
-This document is a working taxonomy of 35 patterns we've seen agents repeatedly produce in production use. It is the source of truth for [agent-review](https://github.com/agent-review/agent-review): every entry maps to a detector that runs against your diff.
+This document is a working taxonomy of 35 patterns we've seen agents repeatedly produce in production use. It is the source of truth for [agent-review](https://github.com/vnmoorthy/agent-review): every entry maps to a detector that runs against your diff.
 
 The taxonomy is split into two parts:
 
 - **Static (AR001–AR025)**: deterministic detectors. Run with no API key, no network, no LLM call. Fast, cheap, free.
 - **LLM-augmented (AR026–AR035)**: fuzzier patterns that need a model to spot. Opt-in via `--llm`.
 
-If you spot a pattern that isn't here, please [open an issue](https://github.com/agent-review/agent-review/issues/new?template=new-detector.md) — every contribution makes the taxonomy stronger.
+If you spot a pattern that isn't here, please [open an issue](https://github.com/vnmoorthy/agent-review/issues/new?template=new-detector.md) — every contribution makes the taxonomy stronger.
 
 ---
 
@@ -559,7 +559,7 @@ The most embarrassing agent failure mode: a confident "done" with a stubbed func
 
 ## Contributing a new failure mode
 
-We accept new detector proposals via [GitHub issues](https://github.com/agent-review/agent-review/issues/new?template=new-detector.md). Each proposal should include:
+We accept new detector proposals via [GitHub issues](https://github.com/vnmoorthy/agent-review/issues/new?template=new-detector.md). Each proposal should include:
 
 1. **Title** — short and descriptive.
 2. **Example** — actual agent-generated code that exhibits the pattern. Anonymize as needed.

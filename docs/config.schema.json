@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://raw.githubusercontent.com/agent-review/agent-review/main/docs/config.schema.json",
+  "$id": "https://raw.githubusercontent.com/vnmoorthy/agent-review/main/docs/config.schema.json",
   "title": "agent-review configuration",
   "description": "Schema for .agent-review.json / agent-review.config.json",
   "type": "object",

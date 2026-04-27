@@ -8,7 +8,7 @@ Thanks for considering a contribution. Two kinds of contributions are most valua
 ## Local development
 
 ```bash
-git clone https://github.com/agent-review/agent-review
+git clone https://github.com/vnmoorthy/agent-review
 cd agent-review
 pnpm install   # or npm install
 pnpm build

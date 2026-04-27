@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/agent-review/agent-review/main/docs/config.schema.json",
+  "$schema": "https://raw.githubusercontent.com/vnmoorthy/agent-review/main/docs/config.schema.json",
 
   "exclude": ["dist/**", "build/**", "vendor/**", "**/*.generated.ts"],
   "include": [],

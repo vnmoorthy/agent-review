@@ -13,10 +13,10 @@
     "linter",
     "static-analysis"
   ],
-  "homepage": "https://github.com/agent-review/agent-review",
+  "homepage": "https://github.com/vnmoorthy/agent-review",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agent-review/agent-review.git"
+    "url": "https://github.com/vnmoorthy/agent-review.git"
   },
   "license": "MIT",
   "bin": {
