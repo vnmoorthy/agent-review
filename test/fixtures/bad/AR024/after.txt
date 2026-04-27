@@ -1,0 +1,5 @@
+import { b } from './b'
+import { something } from './a'
+export const a = 1
+b()
+something()

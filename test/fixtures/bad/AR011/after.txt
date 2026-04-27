@@ -1,0 +1,2 @@
+const apiBase = "https://mockapi.local" // TODO_REPLACE
+const userMock = mockGetUser()

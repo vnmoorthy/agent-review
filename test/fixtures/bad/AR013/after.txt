@@ -1,0 +1,4 @@
+function pay(amount: number) {
+  // TODO: handle fractional cents
+  return charge(amount)
+}

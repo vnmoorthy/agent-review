@@ -1,0 +1,4 @@
+test('does a thing', () => {
+  const r = doIt()
+  const more = work()
+})

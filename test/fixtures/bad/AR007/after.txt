@@ -1,0 +1,4 @@
+type PhantomShape = { id: string }
+interface OtherUnused { x: number }
+function load(): number { return 1 }
+load()

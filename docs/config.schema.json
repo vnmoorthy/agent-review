@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/agent-review/agent-review/main/docs/config.schema.json",
+  "title": "agent-review configuration",
+  "description": "Schema for .agent-review.json / agent-review.config.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "exclude": {
+      "type": "array",
+      "description": "Glob patterns for paths to skip entirely.",
+      "items": { "type": "string" }
+    },
+    "include": {
+      "type": "array",
+      "description": "If set and non-empty, only matching paths are reviewed.",
+      "items": { "type": "string" }
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["info", "low", "medium", "high", "critical"],
+      "description": "Default minimum severity to report."
+    },
+    "failOn": {
+      "type": "string",
+      "enum": ["never", "any", "high", "critical"],
+      "description": "Exit-code policy when findings hit this severity or above."
+    },
+    "rules": {
+      "type": "object",
+      "description": "Per-detector overrides.",
+      "patternProperties": {
+        "^(AR\\d{3}|CUSTOM[A-Z0-9_]+)$": {
+          "oneOf": [
+            { "type": "string", "enum": ["on", "off"] },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "enabled": { "type": "boolean" },
+                "severity": {
+                  "type": "string",
+                  "enum": ["info", "low", "medium", "high", "critical"]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "llm": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "provider": { "type": "string", "enum": ["anthropic", "ollama", "none"] },
+        "model": { "type": "string" },
+        "timeoutMs": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "customDetectors": {
+      "type": "array",
+      "description": "Paths to custom detector modules (relative to the repo root).",
+      "items": { "type": "string" }
+    },
+    "baselineFile": {
+      "type": "string",
+      "description": "Where to store the baseline file (relative to the repo root)."
+    }
+  }
+}

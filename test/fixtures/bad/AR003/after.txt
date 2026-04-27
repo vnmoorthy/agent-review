@@ -1,0 +1,4 @@
+function alive() { return 1 }
+// const x = 1; const y = 2;
+// function old() { return 99; }
+// for (let i = 0; i < 10; i++) { console.log(i) }

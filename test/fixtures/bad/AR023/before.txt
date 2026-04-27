@@ -1,0 +1,3 @@
+function withUpdated(items: readonly any[], p: any) {
+  return items.map(i => ({...i, ...p}))
+}

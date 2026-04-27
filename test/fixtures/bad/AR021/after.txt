@@ -1,0 +1,4 @@
+test('waits', async () => {
+  await new Promise(r => setTimeout(r, 500))
+  expect(isReady()).toBe(true)
+})

@@ -1,0 +1,3 @@
+import unused from "single-package"
+function ok() { return 1 }
+ok()

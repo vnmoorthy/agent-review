@@ -1,0 +1,102 @@
+name: agent-review
+description: "Catch the 35 specific bugs AI coding agents commit. Posts inline annotations on the PR diff."
+author: "agent-review contributors"
+branding:
+  icon: "alert-triangle"
+  color: "purple"
+
+inputs:
+  base-ref:
+    description: "Base ref to diff against. Defaults to the PR target branch or 'main'."
+    required: false
+    default: ""
+  llm:
+    description: "Enable LLM-augmented detectors (AR026-AR035). Requires anthropic-api-key."
+    required: false
+    default: "false"
+  anthropic-api-key:
+    description: "Anthropic API key for the LLM detectors. Pass via secrets."
+    required: false
+    default: ""
+  fail-on:
+    description: "Severity threshold to fail the job: never|any|high|critical"
+    required: false
+    default: "high"
+  severity:
+    description: "Minimum severity to report"
+    required: false
+    default: "info"
+  upload-sarif:
+    description: "Upload SARIF results to GitHub Code Scanning."
+    required: false
+    default: "true"
+  comment-pr:
+    description: "Post a markdown summary comment on the PR (recommended for review UX)."
+    required: false
+    default: "true"
+
+outputs:
+  sarif-file:
+    description: "Path to the generated SARIF file."
+    value: ${{ steps.review.outputs.sarif-file }}
+  total:
+    description: "Total findings."
+    value: ${{ steps.review.outputs.total }}
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Determine base ref
+      id: refs
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.base-ref }}" ]; then
+          echo "base=${{ inputs.base-ref }}" >> "$GITHUB_OUTPUT"
+        elif [ -n "${{ github.base_ref }}" ]; then
+          echo "base=origin/${{ github.base_ref }}" >> "$GITHUB_OUTPUT"
+          git fetch --no-tags --depth=200 origin "${{ github.base_ref }}" || true
+        else
+          echo "base=main" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Run agent-review
+      id: review
+      shell: bash
+      env:
+        ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
+      run: |
+        # Generate SARIF for Code Scanning, JSON for parsing, markdown for PR comment.
+        npx --yes agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --sarif > agent-review.sarif || true
+        npx --yes agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --json > agent-review.json || true
+        npx --yes agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --markdown > agent-review.md || true
+
+        TOTAL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('agent-review.json', 'utf8')).summary.total)")
+        echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+        echo "sarif-file=agent-review.sarif" >> "$GITHUB_OUTPUT"
+
+        # Emit GitHub annotations for inline diff comments.
+        LLM_FLAG=""
+        if [ "${{ inputs.llm }}" = "true" ]; then LLM_FLAG="--llm"; fi
+        npx --yes agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --github $LLM_FLAG --fail-on "${{ inputs.fail-on }}"
+
+    - name: Upload SARIF
+      if: ${{ inputs.upload-sarif == 'true' && always() }}
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: agent-review.sarif
+        category: agent-review
+      continue-on-error: true
+
+    - name: Comment on PR
+      if: ${{ inputs.comment-pr == 'true' && github.event_name == 'pull_request' && always() }}
+      uses: peter-evans/create-or-update-comment@v4
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body-file: agent-review.md
+        edit-mode: replace
+      continue-on-error: true

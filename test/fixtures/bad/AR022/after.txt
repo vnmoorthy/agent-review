@@ -1,0 +1,8 @@
+async function flow() {
+  save(record)
+  return await commit()
+}
+async function commit() {
+  await save(other)
+  return 1
+}

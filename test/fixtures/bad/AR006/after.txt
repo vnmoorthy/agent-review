@@ -1,0 +1,2 @@
+const xs = [1,2,3]
+if (xs.contains(2)) { console.warn("found") }

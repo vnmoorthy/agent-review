@@ -1,0 +1,5 @@
+def get_user(id):
+    return db.find(id)
+
+def getUserByEmail(email):
+    return db.find_by_email(email)

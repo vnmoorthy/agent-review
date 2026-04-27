@@ -1,0 +1,6 @@
+/**
+ * Returns the user's `email`.
+ */
+function getName(user: any) {
+  return user.fullName
+}

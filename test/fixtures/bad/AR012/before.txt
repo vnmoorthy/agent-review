@@ -1,0 +1,3 @@
+function process(items: number[]) {
+  return items.map(x => x * 2)
+}

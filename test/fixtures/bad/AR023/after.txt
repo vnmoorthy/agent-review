@@ -1,0 +1,5 @@
+function withUpdated(items: readonly any[], p: any) {
+  items.push({...p, x: 1})
+  Object.assign(p, { y: 2 })
+  return items.map(i => ({...i, ...p}))
+}

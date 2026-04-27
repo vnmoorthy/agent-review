@@ -1,0 +1,26 @@
+{
+  "$schema": "https://raw.githubusercontent.com/agent-review/agent-review/main/docs/config.schema.json",
+
+  "exclude": ["dist/**", "build/**", "vendor/**", "**/*.generated.ts"],
+  "include": [],
+
+  "severity": "info",
+  "failOn": "high",
+
+  "rules": {
+    "AR014": "off",
+    "AR020": "off",
+    "AR023": { "severity": "low" },
+    "AR018": { "severity": "critical" }
+  },
+
+  "llm": {
+    "enabled": false,
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5-20251001",
+    "timeoutMs": 60000
+  },
+
+  "customDetectors": [],
+  "baselineFile": ".agent-review-baseline.json"
+}

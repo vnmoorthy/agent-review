@@ -1,0 +1,4 @@
+test('login works', () => {
+  const r = login()
+  expect(r).toBe(true)
+})

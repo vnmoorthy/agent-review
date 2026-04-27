@@ -1,0 +1,3 @@
+async function flow() {
+  await save(record)
+}

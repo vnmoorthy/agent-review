@@ -1,0 +1,16 @@
+async function go() {
+  try {
+    await a()
+    await another()
+  } catch (e) {
+    log.error("op failed", e)
+    throw new BadRequest("could not run a")
+  }
+  try {
+    await b()
+    await also()
+  } catch (e) {
+    log.error("op failed", e)
+    throw new BadRequest("could not run a")
+  }
+}

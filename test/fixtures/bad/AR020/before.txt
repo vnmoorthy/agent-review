@@ -1,0 +1,2 @@
+const TIMEOUT_MS = 30000
+function poll() { setTimeout(check, TIMEOUT_MS) }

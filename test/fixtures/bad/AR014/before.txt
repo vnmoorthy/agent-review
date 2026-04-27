@@ -1,0 +1,2 @@
+def get_user(id):
+    return db.find(id)

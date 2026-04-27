@@ -1,0 +1,4 @@
+function process(items: number[]) {
+  console.log("items", items)
+  return items.map(x => x * 2)
+}
