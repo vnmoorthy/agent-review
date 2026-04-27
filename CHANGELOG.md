@@ -10,6 +10,7 @@ All notable changes to agent-review are documented here. The format follows [Kee
 - Validate `--severity`, `--fail-on`, and `--provider` against their documented choices. Bad values previously slipped through into the run with unpredictable behavior; they now exit 1 with the allowed list.
 - Warn loudly to stderr when `--llm` is requested but no provider is configured. Previously the run silently fell back to static-only.
 - Complete the `@vnmoorthy/agent-review` migration in the spots that 0.1.4 missed: `action.yml` (4 invocations), the bundled hook scripts emitted by `agent-review init` and `agent-review hook install`, the Claude Code skill template (`src/skill/SKILL.md`), the bug-report issue template, the README's `npm i -g`/`-D` lines, and the npm/Node version badges. The unscoped `agent-review` name on npm still resolves to a stale 0.1.1 that crashes with `Cannot find module 'tsx/cjs'`.
+- Use the explicit `npx --yes --package=@vnmoorthy/agent-review -- agent-review …` form in `action.yml` and the emitted hook scripts. Without `--package`, `npx --yes @vnmoorthy/agent-review` failed to symlink the bin on Ubuntu CI (`sh: 1: agent-review: not found`), even though the published tarball ships an executable bin. The explicit form is portable across platforms.
 
 ### CI
 

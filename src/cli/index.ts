@@ -426,7 +426,7 @@ if ! command -v npx >/dev/null 2>&1; then
   echo "agent-review hook: npx not found; skipping" >&2
   exit 0
 fi
-npx --yes @vnmoorthy/agent-review --staged --fail-on high
+npx --yes --package=@vnmoorthy/agent-review -- agent-review --staged --fail-on high
 `;
     writeFileSync(path, script);
     chmodSync(path, 0o755);
@@ -528,7 +528,7 @@ program
 # Installed by \`agent-review init\`.
 set -e
 if ! command -v npx >/dev/null 2>&1; then exit 0; fi
-npx --yes @vnmoorthy/agent-review --staged --fail-on high
+npx --yes --package=@vnmoorthy/agent-review -- agent-review --staged --fail-on high
 `;
       writeFileSync(hookPath, script);
       chmodSync(hookPath, 0o755);

@@ -71,9 +71,9 @@ runs:
         ANTHROPIC_API_KEY: ${{ inputs.anthropic-api-key }}
       run: |
         # Generate SARIF for Code Scanning, JSON for parsing, markdown for PR comment.
-        npx --yes @vnmoorthy/agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --sarif > agent-review.sarif || true
-        npx --yes @vnmoorthy/agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --json > agent-review.json || true
-        npx --yes @vnmoorthy/agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --markdown > agent-review.md || true
+        npx --yes --package=@vnmoorthy/agent-review -- agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --sarif > agent-review.sarif || true
+        npx --yes --package=@vnmoorthy/agent-review -- agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --json > agent-review.json || true
+        npx --yes --package=@vnmoorthy/agent-review -- agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --markdown > agent-review.md || true
 
         TOTAL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('agent-review.json', 'utf8')).summary.total)")
         echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
@@ -82,7 +82,7 @@ runs:
         # Emit GitHub annotations for inline diff comments.
         LLM_FLAG=""
         if [ "${{ inputs.llm }}" = "true" ]; then LLM_FLAG="--llm"; fi
-        npx --yes @vnmoorthy/agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --github $LLM_FLAG --fail-on "${{ inputs.fail-on }}"
+        npx --yes --package=@vnmoorthy/agent-review -- agent-review --branch "${{ steps.refs.outputs.base }}" --severity "${{ inputs.severity }}" --github $LLM_FLAG --fail-on "${{ inputs.fail-on }}"
 
     - name: Upload SARIF
       if: ${{ inputs.upload-sarif == 'true' && always() }}
