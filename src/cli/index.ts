@@ -31,7 +31,32 @@ import {
 import { findRepoRoot } from "../core/git/diff.js";
 import { loadCustomDetectors } from "../core/plugins.js";
 
-const VERSION = "0.1.0";
+// Read version from package.json so `--version` always reflects the installed
+// build, not a stale hardcoded string.
+const VERSION = (() => {
+  try {
+    // Resolve relative to this file at runtime; works for both tsx (src) and dist builds.
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const path = require("node:path");
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const fs = require("node:fs");
+    const candidates = [
+      path.resolve(__dirname, "..", "package.json"),
+      path.resolve(__dirname, "..", "..", "package.json"),
+      path.resolve(__dirname, "..", "..", "..", "package.json"),
+    ];
+    for (const p of candidates) {
+      if (fs.existsSync(p)) {
+        const pkg = JSON.parse(fs.readFileSync(p, "utf8"));
+        if (pkg && typeof pkg.version === "string" && pkg.name === "agent-review")
+          return pkg.version as string;
+      }
+    }
+  } catch {
+    // fall through to default
+  }
+  return "0.0.0";
+})();
 
 function applyCliOverrides(cfg: RunConfig, opts: any): RunConfig {
   if (opts.staged) cfg.diffMode = "staged";
