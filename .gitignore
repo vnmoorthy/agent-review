@@ -14,3 +14,7 @@ coverage
 tsup.config.bundled_*.mjs
 *.bundled_*.mjs
 .agent-review-cache/
+
+# Local references to other tools' repos — never commit these
+.gstack-reference/
+.gstack/
