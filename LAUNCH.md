@@ -4,9 +4,9 @@ Don't ship this without reading. The taxonomy is the marketing artifact. The too
 
 ## T-1 day
 
-- Run `npx agent-review` against 5 well-known repos. Confirm zero crashes, low false-positive rate.
-- Cut a 30-second cast.gif: `npx agent-review` on a deliberately bad diff, then `npx agent-review --apply-safe`. Embed in README.
-- Verify `npx agent-review` works on a clean machine (no global install).
+- Run `npx @vnmoorthy/agent-review` against 5 well-known repos. Confirm zero crashes, low false-positive rate.
+- Cut a 30-second cast.gif: `npx @vnmoorthy/agent-review` on a deliberately bad diff, then `npx @vnmoorthy/agent-review --apply-safe`. Embed in README.
+- Verify `npx @vnmoorthy/agent-review` works on a clean machine (no global install).
 - Tag v0.1.0 on GitHub and push to npm.
 
 ## Show HN (Tuesday 9am ET)
@@ -21,7 +21,7 @@ Don't ship this without reading. The taxonomy is the marketing artifact. The too
 >
 > The interesting part is the taxonomy itself. Three structural differences drive the failure profile: agents over-build, agents pattern-match across languages, agents focus on the happy path. Each entry in the taxonomy explains the failure mode, why agents commit it, and how the detector works.
 >
-> The skill version (`npx agent-review skill install`) drops into `~/.claude/skills/` and turns Claude Code into a self-reviewing agent: before it declares a task done, it runs the review and surfaces findings.
+> The skill version (`npx @vnmoorthy/agent-review skill install`) drops into `~/.claude/skills/` and turns Claude Code into a self-reviewing agent: before it declares a task done, it runs the review and surfaces findings.
 >
 > MIT, runs offline by default, contributions to the taxonomy welcome.
 >
@@ -45,7 +45,7 @@ Don't ship this without reading. The taxonomy is the marketing artifact. The too
 > - "Spec drift" — implementation no longer matches the function name or docstring.
 > - Stubbed `pass` / `return null` in a function the agent claims is done.
 >
-> Wrote them up as a taxonomy of 35 patterns and built a tool: `npx agent-review` against your staged diff. Drop-in skill at `npx agent-review skill install` makes Claude self-review before declaring done.
+> Wrote them up as a taxonomy of 35 patterns and built a tool: `npx @vnmoorthy/agent-review` against your staged diff. Drop-in skill at `npx @vnmoorthy/agent-review skill install` makes Claude self-review before declaring done.
 >
 > MIT, offline by default. Curious what failure modes I'm missing — please submit issues.
 
@@ -61,7 +61,7 @@ Same body, swap "Claude Code" for the tool name. Lead with the taxonomy.
 4. **#3: Agents focus on the happy path.** They implement what passes the example, then stop. Edge cases, error paths, and contract drift escape the loop. The most embarrassing one: a confident "done" with a stubbed `pass`.
 5. **The 35 patterns** range from cheap-to-detect (unused imports, debug prints) to subtle (silently changed behavior, fabricated RFC citations). 25 are caught by static analysis; 10 need an LLM.
 6. **Spec drift** is the one that scares me most. A clean diff, passing tests, broken production. The function name and docstring still claim X; the body now does Y. Easiest way to ship a regression nobody catches.
-7. I built a tool: `npx agent-review` against your staged diff. Drop-in skill at `npx agent-review skill install` makes Claude self-review before declaring done. Offline by default. MIT. [link]
+7. I built a tool: `npx @vnmoorthy/agent-review` against your staged diff. Drop-in skill at `npx @vnmoorthy/agent-review skill install` makes Claude self-review before declaring done. Offline by default. MIT. [link]
 8. Full taxonomy with examples for every entry: [TAXONOMY.md link]. If you've spotted a pattern that isn't here, please open an issue — every contribution makes the taxonomy stronger.
 
 ## Awesome-list PRs

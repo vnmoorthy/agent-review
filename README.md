@@ -9,14 +9,14 @@
 [![Detectors](https://img.shields.io/badge/detectors-35-purple)](./TAXONOMY.md)
 
 ```bash
-npx agent-review                 # review staged changes
-npx agent-review --last-commit   # review HEAD~1..HEAD
-npx agent-review --working-tree  # review uncommitted edits
-npx agent-review --apply-safe    # auto-fix the high-confidence ones
+npx @vnmoorthy/agent-review                 # review staged changes
+npx @vnmoorthy/agent-review --last-commit   # review HEAD~1..HEAD
+npx @vnmoorthy/agent-review --working-tree  # review uncommitted edits
+npx @vnmoorthy/agent-review --apply-safe    # auto-fix the high-confidence ones
 ```
 
 ```
-$ npx agent-review
+$ npx @vnmoorthy/agent-review
 
 agent-review: 6 findings
   ! high 1   * medium 3   - low 2
@@ -62,7 +62,7 @@ agent-review is the only tool that ships a curated taxonomy of *agent-specific* 
 
 ```bash
 # Run with no install
-npx agent-review
+npx @vnmoorthy/agent-review
 
 # Install globally
 npm i -g agent-review
@@ -76,15 +76,15 @@ Node 18+ required.
 ## Use as a Claude Code skill
 
 ```bash
-npx agent-review skill install
+npx @vnmoorthy/agent-review skill install
 ```
 
-Installs `~/.claude/skills/agent-review/`. From this point on, when you wrap up a coding task in Claude Code, the skill triggers, runs `agent-review --json` against your diff, and reports findings before declaring "done". Uninstall with `npx agent-review skill uninstall`.
+Installs `~/.claude/skills/agent-review/`. From this point on, when you wrap up a coding task in Claude Code, the skill triggers, runs `agent-review --json` against your diff, and reports findings before declaring "done". Uninstall with `npx @vnmoorthy/agent-review skill uninstall`.
 
 ## Use as a git pre-commit hook
 
 ```bash
-npx agent-review hook install
+npx @vnmoorthy/agent-review hook install
 ```
 
 Installs `.git/hooks/pre-commit` to run `agent-review --staged --fail-on high`. Blocks commits with `high` or `critical` findings; otherwise stays quiet.
@@ -92,7 +92,7 @@ Installs `.git/hooks/pre-commit` to run `agent-review --staged --fail-on high`. 
 ## One-shot bootstrap
 
 ```bash
-npx agent-review init
+npx @vnmoorthy/agent-review init
 ```
 
 Drops a starter `.agent-review.json`, installs the pre-commit hook, installs the Claude Code skill — all in one step. Pass `--skip-hook`, `--skip-skill`, or `--skip-config` if you want partial setup.
@@ -100,7 +100,7 @@ Drops a starter `.agent-review.json`, installs the pre-commit hook, installs the
 ## Look up a finding
 
 ```bash
-npx agent-review explain AR017
+npx @vnmoorthy/agent-review explain AR017
 ```
 
 Prints the taxonomy entry for any detector ID — handy when reading a finding in a CI log and you want the full context without leaving the terminal.
@@ -143,14 +143,14 @@ Deterministic detectors that run against the AST + diff. No API key, no network,
 
 ```bash
 # Anthropic (Claude Haiku 4.5 by default — recommended)
-ANTHROPIC_API_KEY=sk-ant-... npx agent-review --llm
+ANTHROPIC_API_KEY=sk-ant-... npx @vnmoorthy/agent-review --llm
 
 # OpenAI / OpenAI-compatible (Groq, Together, Fireworks, vLLM, etc.)
-OPENAI_API_KEY=sk-... npx agent-review --llm
-OPENAI_API_KEY=gsk_... npx agent-review --llm --openai-url https://api.groq.com/openai
+OPENAI_API_KEY=sk-... npx @vnmoorthy/agent-review --llm
+OPENAI_API_KEY=gsk_... npx @vnmoorthy/agent-review --llm --openai-url https://api.groq.com/openai
 
 # Local Ollama
-OLLAMA_BASE_URL=http://127.0.0.1:11434 npx agent-review --llm --model llama3.1:8b
+OLLAMA_BASE_URL=http://127.0.0.1:11434 npx @vnmoorthy/agent-review --llm --model llama3.1:8b
 ```
 
 A typical 200-line diff with Claude Haiku 4.5 costs **well under $0.01** per review. The LLM pass is hard-capped at 200 files per run (configurable) so a runaway monorepo PR can't blow your API budget.
@@ -158,13 +158,13 @@ A typical 200-line diff with Claude Haiku 4.5 costs **well under $0.01** per rev
 ## Output formats
 
 ```bash
-npx agent-review                       # default: pretty terminal with color
-npx agent-review --json                # machine-readable, stable schema
-npx agent-review --markdown            # PR-comment ready
-npx agent-review --sarif               # SARIF 2.1.0 for GitHub Code Scanning
-npx agent-review --github              # GitHub Actions inline annotations
-npx agent-review --junit               # JUnit XML (Jenkins, Buildkite, GitLab, CircleCI)
-npx agent-review --html                # standalone HTML report (email, dashboards)
+npx @vnmoorthy/agent-review                       # default: pretty terminal with color
+npx @vnmoorthy/agent-review --json                # machine-readable, stable schema
+npx @vnmoorthy/agent-review --markdown            # PR-comment ready
+npx @vnmoorthy/agent-review --sarif               # SARIF 2.1.0 for GitHub Code Scanning
+npx @vnmoorthy/agent-review --github              # GitHub Actions inline annotations
+npx @vnmoorthy/agent-review --junit               # JUnit XML (Jenkins, Buildkite, GitLab, CircleCI)
+npx @vnmoorthy/agent-review --html                # standalone HTML report (email, dashboards)
 ```
 
 JSON schema is documented in [docs/json-schema.md](./docs/json-schema.md). SARIF output uploads cleanly to the **Security → Code scanning** tab on GitHub.
@@ -215,8 +215,8 @@ Full options in [docs/config.md](./docs/config.md).
 Adopting agent-review on an existing codebase? Capture the current findings as a baseline, then only see *new* findings going forward:
 
 ```bash
-npx agent-review baseline init                # writes .agent-review-baseline.json
-npx agent-review --branch main --baseline     # only flags issues introduced after baseline
+npx @vnmoorthy/agent-review baseline init                # writes .agent-review-baseline.json
+npx @vnmoorthy/agent-review --branch main --baseline     # only flags issues introduced after baseline
 ```
 
 Baselines fingerprint findings on (detector + file + normalized excerpt) so they survive minor reformatting.
